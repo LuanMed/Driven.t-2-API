@@ -17,7 +17,10 @@ async function getTickets(userId: number): Promise<Ticket & { TicketType: Ticket
   return tickets;
 }
 
-async function createOrUpdateTickets(ticketTypeId: number, userId: number) {
+async function createOrUpdateTickets(
+  ticketTypeId: number,
+  userId: number,
+): Promise<Ticket & { TicketType: TicketType }> {
   if (!ticketTypeId) throw requestError(400, 'Bad request');
 
   const enrollments = await enrollmentRepository.findWithAddressByUserId(userId);
