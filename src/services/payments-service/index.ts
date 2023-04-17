@@ -1,25 +1,19 @@
 import { notFoundError, requestError, unauthorizedError } from '@/errors';
 import { Body } from '@/protocols';
-import enrollmentRepository from '@/repositories/enrollment-repository';
 import paymentsRepository from '@/repositories/payments-repository';
 
 async function getPayment(ticketId: number, userId: number) {
   if (!ticketId) throw requestError(400, 'Bad request');
-  console.log(ticketId);
+
   const payment = await paymentsRepository.getPayment(ticketId);
-  console.log(payment);
 
-  // const ownTicket = await paymentsRepository.validarTicketUsuario(ticketId, userId);
+  const ticket = await paymentsRepository.getTicketById(ticketId);
 
-  // if (!ownTicket) throw unauthorizedError();
+  if (!ticket) throw notFoundError();
 
-  if (!payment) throw notFoundError();
+  const ticketOwnerId = ticket.Enrollment.userId;
 
-  const enrollments = await enrollmentRepository.findWithAddressByUserId(userId);
-
-  const ticket = await paymentsRepository.getTicket(enrollments.id);
-
-  if (ticket.id != ticketId) throw unauthorizedError();
+  if (ticketOwnerId != userId) throw unauthorizedError();
 
   return payment;
 }
@@ -30,20 +24,11 @@ async function postPayment(body: Body, userId: number) {
   const ticket = await paymentsRepository.getTicketById(body.ticketId);
   if (!ticket) throw notFoundError();
 
-  const ticketType = await paymentsRepository.getTicketType(ticket.ticketTypeId);
+  const ticketOwnerId = ticket.Enrollment.userId;
 
-  const enrollments = await enrollmentRepository.findWithAddressByUserId(userId);
+  if (ticketOwnerId != userId) throw unauthorizedError();
 
-  const userTicket = await paymentsRepository.getTicket(enrollments.id);
-  console.log(enrollments.userId);
-  console.log(userTicket.id);
-  console.log(body.ticketId);
-  if (userTicket.id != body.ticketId) throw unauthorizedError();
-  // const ownTicket = await paymentsRepository.validarTicketUsuario(body.ticketId, userId);
-
-  // if (!ownTicket) throw unauthorizedError();
-
-  await paymentsRepository.postPayment(body, ticketType.price);
+  await paymentsRepository.postPayment(body, ticket.TicketType.price);
 
   await paymentsRepository.updateTicketStatus(body.ticketId);
 
