@@ -34,7 +34,7 @@ async function getRooms(id: number) {
       id,
     },
     include: {
-      Room: true,
+      Rooms: true,
     },
   });
 }

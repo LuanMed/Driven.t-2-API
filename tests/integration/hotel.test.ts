@@ -175,7 +175,7 @@ describe('GET /hotels/:hotelId', () => {
       image: hotel.image,
       createdAt: hotel.createdAt.toISOString(),
       updatedAt: hotel.updatedAt.toISOString(),
-      Room: [
+      Rooms: [
         {
           id: room.id,
           name: room.name,

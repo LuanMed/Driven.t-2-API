@@ -115,10 +115,10 @@ model Hotel {
   image     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Room      Room[]
+  Rooms     Rooms[]
 }
 
-model Room {
+model Rooms {
   id        Int       @id @default(autoincrement())
   name      String
   capacity  Int
@@ -133,7 +133,7 @@ model Booking {
   id        Int      @id @default(autoincrement())
   User      User     @relation(fields: [userId], references: [id])
   userId    Int
-  Room      Room     @relation(fields: [roomId], references: [id])
+  Rooms     Rooms    @relation(fields: [roomId], references: [id])
   roomId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
