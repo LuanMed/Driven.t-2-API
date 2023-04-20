@@ -78,8 +78,10 @@ describe('when token is valid', () => {
     const user = await createUser();
     const token = await generateValidToken(user);
     const enrollment = await createEnrollmentWithAddress(user);
-    const ticketType = await createTicketType();
-    await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
+    const isRemote = 'false';
+    const includesHotel = 'true';
+    const ticketType = await createTicketType(isRemote, includesHotel);
+    await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
 
     const response = await server.get('/hotels').set('Authorization', `Bearer ${token}`);
 

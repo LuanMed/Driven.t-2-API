@@ -7,10 +7,12 @@ async function getAllHotels(userId: number) {
 
   const ticket = user?.Ticket[0];
 
-  if (!user || !ticket || !hotels[0]) throw notFoundError();
+  if (!user || !ticket) throw notFoundError();
 
   if (ticket.status == 'RESERVED' || ticket.TicketType.isRemote || !ticket.TicketType.includesHotel)
     throw paymentRequiredError();
+
+  if (!hotels[0]) throw notFoundError();
 
   return hotels;
 }
