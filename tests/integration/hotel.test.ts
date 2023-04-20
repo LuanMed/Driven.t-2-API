@@ -83,7 +83,7 @@ describe('when token is valid', () => {
 
     const response = await server.get('/hotels').set('Authorization', `Bearer ${token}`);
 
-    expect(response.status).toBe(httpStatus.PAYMENT_REQUIRED);
+    expect(response.status).toBe(httpStatus.NOT_FOUND);
   });
 
   it('should respond with status 402 if ticket is not PAID', async () => {

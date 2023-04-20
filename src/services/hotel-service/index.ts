@@ -7,7 +7,7 @@ async function getAllHotels(userId: number) {
 
   const ticket = user?.Ticket[0];
 
-  if (!user || !ticket || !hotels) throw notFoundError();
+  if (!user || !ticket || !hotels[0]) throw notFoundError();
 
   if (ticket.status == 'RESERVED' || ticket.TicketType.isRemote || !ticket.TicketType.includesHotel)
     throw paymentRequiredError();
