@@ -4,16 +4,19 @@ import enrollmentRepository from '@/repositories/enrollment-repository';
 import ticketsRepository from '@/repositories/tickets-repository';
 
 async function getTicketTypes(): Promise<TicketType[]> {
-  const ticketTypes = await ticketsRepository.getTicketTypes();
+  const ticketTypes: TicketType[] = await ticketsRepository.getTicketTypes();
+  if (!ticketTypes) throw notFoundError();
+
   return ticketTypes;
 }
 
 async function getTickets(userId: number): Promise<Ticket & { TicketType: TicketType }> {
-  const tickets = await ticketsRepository.getTickets();
-
   const enrollments = await enrollmentRepository.findWithAddressByUserId(userId);
+  if (!enrollments) throw notFoundError();
 
-  if (!tickets || !enrollments) throw notFoundError();
+  const tickets = await ticketsRepository.getTickets(enrollments.id);
+  if (!tickets) throw notFoundError();
+
   return tickets;
 }
 
@@ -29,7 +32,7 @@ async function createOrUpdateTickets(
 
   await ticketsRepository.createOrUpdateTickets(ticketTypeId, userId, enrollments.id);
 
-  const response = await ticketsRepository.getTickets();
+  const response = await ticketsRepository.getTickets(enrollments.id);
   return response;
 }
 
